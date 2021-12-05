@@ -6,6 +6,8 @@ var logger = require("morgan");
 var passport = require("passport");
 var cors = require("cors");
 
+require("./helpers/passport");
+
 var usersRouter = require("./routes/users");
 var postsRouter = require("./routes/posts");
 var commentsRouter = require("./routes/comments");
@@ -13,6 +15,7 @@ var notificationsRouter = require("./routes/notifications");
 
 var app = express();
 app.use(cors());
+app.use(passport.initialize());
 
 // mongoDB
 var mongoose = require("mongoose");
