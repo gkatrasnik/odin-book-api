@@ -14,7 +14,7 @@ router.post("/login", usersController.login_POST);
 router.post("/register", usersController.register_POST);
 
 router.get(
-  "/profile",
+  "/:userId",
   passport.authenticate("jwt", { session: false }),
   usersController.profile_GET
 );

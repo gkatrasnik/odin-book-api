@@ -1,4 +1,6 @@
 const User = require("../models/user");
+const Post = require("../models/post");
+
 const bcrypt = require("bcryptjs");
 const helper = require("../helpers/helper");
 
@@ -87,8 +89,37 @@ exports.login_POST = async (req, res, next) => {
     });
 };
 
+//returns success,user,posts
 exports.profile_GET = (req, res, next) => {
-  return res.json(req.user);
+  User.findById(req.params.userId)
+    .populate("friends")
+    .exec(function (err, user) {
+      if (err) {
+        return res.status(500).json({ success: false, msg: err.message });
+      }
+      if (user == null) {
+        const err = new Error("User not found");
+        return res.status(404).json({ success: false, msg: err.message });
+      }
+      //if user found, search for posts where user === user
+      Post.find({ user: req.params.userId })
+        .populate("user")
+        .populate("likes")
+        .populate("comments")
+        .exec(function (err, posts) {
+          if (err) {
+            return res.status(500).json({ success: false, msg: err.message });
+          }
+          if (posts == null) {
+            const err = new Error("Posts not found");
+            return res.status(404).json({ success: false, msg: err.message });
+          }
+
+          return res
+            .status(200)
+            .json({ success: true, user: user, posts: posts });
+        });
+    });
 };
 
 //get list of users
