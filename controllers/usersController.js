@@ -1,9 +1,5 @@
 const User = require("../models/user");
 const Post = require("../models/post");
-<<<<<<< HEAD
-
-=======
->>>>>>> tmp
 const bcrypt = require("bcryptjs");
 const helper = require("../helpers/helper");
 
