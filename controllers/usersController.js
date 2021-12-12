@@ -1,6 +1,9 @@
 const User = require("../models/user");
 const Post = require("../models/post");
+<<<<<<< HEAD
 
+=======
+>>>>>>> tmp
 const bcrypt = require("bcryptjs");
 const helper = require("../helpers/helper");
 
@@ -132,5 +135,31 @@ exports.list_GET = (req, res, next) => {
       }
       //Successful, so send
       res.json(list_users);
+    });
+};
+
+//get list of friends
+exports.friends_GET = (req, res, next) => {
+  User.find({ friends: req.params.userId })
+    .sort([["username", "ascending"]])
+    .exec(function (err, list_friends) {
+      if (err) {
+        return next(err);
+      }
+      //Successful, so send
+      res.status(200).json({ success: true, friends: list_friends });
+    });
+};
+
+//get list of NOT friends
+exports.notfriends_GET = (req, res, next) => {
+  User.find({ friends: { $ne: req.params.userId } })
+    .sort([["username", "ascending"]])
+    .exec(function (err, notlist_friends) {
+      if (err) {
+        return next(err);
+      }
+      //Successful, so send
+      res.status(200).json({ success: true, notfriends: notlist_friends });
     });
 };
