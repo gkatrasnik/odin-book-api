@@ -7,7 +7,8 @@ exports.index = function (req, res, next) {
 
 //post new post
 exports.newpost_POST = (req, res, next) => {
-  const { userId, text } = req.body;
+  const { text } = req.body;
+  const userId = req.params.userId;
   const newPost = new Post({
     user: userId,
     text: text,
@@ -64,5 +65,21 @@ exports.post_DELETE = (req, res) => {
     })
     .catch(function (error) {
       console.log(error); // Failure
+    });
+};
+
+//get list of all posts //edit to only get friends posts!!! -----------------------
+exports.posts_list_GET = (req, res, next) => {
+  Post.find()
+    .populate("comments")
+    .populate("likes")
+    .populate("user")
+    .sort([["timestamp", "ascending"]])
+    .exec(function (err, list_posts) {
+      if (err) {
+        return next(err);
+      }
+      //Successful, so send
+      res.status(200).json(list_posts);
     });
 };
