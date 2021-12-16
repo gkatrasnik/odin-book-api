@@ -24,8 +24,10 @@ router.get(
   usersController.notfriends_GET
 );
 
+//login
 router.post("/login", usersController.login_POST);
 
+//register
 router.post("/register", usersController.register_POST);
 
 //get user profile

@@ -3,10 +3,6 @@ const Post = require("../models/post");
 const bcrypt = require("bcryptjs");
 const helper = require("../helpers/helper");
 
-exports.index = function (req, res, next) {
-  res.json({ msg: "users index response" });
-};
-
 exports.register_POST = (req, res, next) => {
   const { username, password, firstname, lastname } = req.body;
 
@@ -88,7 +84,7 @@ exports.login_POST = async (req, res, next) => {
     });
 };
 
-//returns success,user,posts
+//get user profile
 exports.profile_GET = (req, res, next) => {
   User.findById(req.params.userId)
     .populate("friends")

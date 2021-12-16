@@ -1,10 +1,6 @@
 const Post = require("../models/post");
 const Comment = require("../models/comment");
 
-exports.index = function (req, res, next) {
-  res.json({ msg: "posts index response" });
-};
-
 //post new post
 exports.newpost_POST = (req, res, next) => {
   const { text } = req.body;
