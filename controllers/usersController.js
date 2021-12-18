@@ -343,3 +343,54 @@ exports.unsend_friend_request_DELETE = async (req, res) => {
     return res.status(400).json({ success: false, msg: err.message });
   }
 };
+
+//delete friend
+exports.delete_friend_DELETE = async (req, res) => {
+  const { userId } = req.body;
+  const secondUserId = req.params.userId;
+
+  try {
+    const currentUser = await User.findById(userId);
+    const secondUser = await User.findById(secondUserId);
+
+    if (
+      !currentUser.friends.includes(secondUser._id) ||
+      !secondUser.friends.includes(currentUser._id)
+    ) {
+      return res.status(400).json({
+        success: false,
+        msg: "You are not friend with this user",
+      });
+    } else {
+      //if everything is ok
+
+      // delete ids from friends
+      const updatedFriendsCurrentUser = currentUser.friends.filter(
+        (friend) => friend != secondUser._id.toString()
+      );
+      const updatedFriendsSecondUser = secondUser.friends.filter(
+        (friend) => friend != currentUser._id.toString()
+      );
+
+      currentUser.friends = updatedFriendsCurrentUser;
+      secondUser.friends = updatedFriendsSecondUser;
+
+      // add ids to friends for both users...
+
+      currentUser.friends = updatedFriendsCurrentUser;
+      secondUser.friends = updatedFriendsSecondUser;
+
+      const updatedCurrentUser = await currentUser.save();
+      const updatedSecondUser = await secondUser.save();
+
+      return res.status(200).json({
+        success: true,
+        msg: "Friend removed",
+        currentUser: updatedCurrentUser,
+        secondUser: updatedSecondUser,
+      });
+    }
+  } catch (err) {
+    return res.status(400).json({ msg: err.message });
+  }
+};
