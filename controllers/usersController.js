@@ -155,3 +155,50 @@ exports.notfriends_GET = (req, res, next) => {
       res.status(200).json({ success: true, notfriends: notlist_friends });
     });
 };
+
+//----------------------FRIEND REQUESTS---------------------------------
+
+//send friend request
+exports.send_friend_request_POST = (req, res, next) => {
+  const { userId } = req.body;
+  const secondUserId = req.params.userId;
+
+  try {
+    const currentUser = await User.findById(userdId);
+    const secondUser = await User.findById(secondUserId);
+
+    if (currentUser._id.toString() === secondUser._id.toString()) {
+      return res.status(400).json({
+        success: false,
+        msg: "You can not send friend request to your self",
+      });
+    } else if (
+      secondUser.friend_requests.includes(currentUser._id.toString())
+    ) {
+      return res.status(400).json({
+        success: false,
+        msg: "You alreqdy sent friend request to this user",
+      });
+    } else if (secondUser.friends.includes(loggedUser._id.toString())) {
+      return res.status(400).json({
+        success: false,
+        msg: "User is already your friend!",
+      });
+    } else {
+      //if everything is ok, add ids to friend requests
+      currentUser.sent_friend_requests.push(secondUser._id);
+      secondUser.friend_requests.push(currentUser._id);
+
+      await currentUser.save();
+      await secondUser.save();
+
+      return res.status(200).json({
+        success: true,
+        currentUser: currentUser,
+        secondUser: secondUser,
+      });
+    }
+  } catch (err) {
+    return res.status(400).json({ success: false, msg: err.message });
+  }
+};
