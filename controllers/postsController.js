@@ -1,5 +1,6 @@
 const Post = require("../models/post");
 const Comment = require("../models/comment");
+const User = require("../models/user");
 
 //post new post
 exports.newpost_POST = (req, res, next) => {
@@ -65,17 +66,35 @@ exports.post_DELETE = (req, res) => {
 };
 
 //get list of all posts //edit to only get friends posts!!! -----------------------
-exports.posts_list_GET = (req, res, next) => {
-  Post.find()
-    .populate("comments")
-    .populate("likes")
-    .populate("user")
-    .sort([["timestamp", "ascending"]])
-    .exec(function (err, list_posts) {
-      if (err) {
-        return next(err);
-      }
-      //Successful, so send
-      res.status(200).json(list_posts);
+exports.posts_list_GET = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const currentUser = await User.findById(userId);
+    const friendsList = currentUser.friends;
+
+    friendsList.push(userId);
+
+    const posts = await Post.find({ user: { $in: friendsList } })
+      .populate("user", "-password")
+      .populate({
+        path: "comments",
+        populate: { path: "user" },
+        options: { sort: { createdAt: -1 } },
+      })
+      .populate("likes", "-password")
+      .sort("-createdAt");
+
+    res.status(200).json({
+      success: true,
+      msg: "All posts from friends",
+      posts: posts,
     });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      msg: "Posts coudn't be find!",
+      err: err.message,
+    });
+  }
 };
