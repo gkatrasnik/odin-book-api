@@ -262,7 +262,7 @@ exports.deny_friend_request_DELETE = async (req, res) => {
   const secondUserId = req.params.userId;
 
   try {
-    const currentUser = await User.findById(userdId);
+    const currentUser = await User.findById(userId);
     const secondUser = await User.findById(secondUserId);
 
     if (!secondUser.sent_friend_requests.includes(currentUser._id.toString())) {
@@ -305,7 +305,7 @@ exports.unsend_friend_request_DELETE = async (req, res) => {
   const secondUserId = req.params.userId;
 
   try {
-    const currentUser = await User.findById(userdId);
+    const currentUser = await User.findById(userId);
     const secondUser = await User.findById(secondUserId);
 
     if (

@@ -41,21 +41,21 @@ router.get(
 
 // Send friend request
 router.post(
-  "/:id/send-request",
+  "/:userId/send-request",
   passport.authenticate("jwt", { session: false }),
   usersController.send_friend_request_POST
 );
 
 // accept friend request
 router.post(
-  "/:id/accept-request",
+  "/:userId/accept-request",
   passport.authenticate("jwt", { session: false }),
   usersController.accept_friend_request_POST
 );
 
 // deny friend request
 router.delete(
-  "/:id/deny-request",
+  "/:userId/deny-request",
   passport.authenticate("jwt", { session: false }),
 
   usersController.deny_friend_request_DELETE
@@ -63,7 +63,7 @@ router.delete(
 
 // cancel sent friend request (unsend)
 router.delete(
-  "/:id/unsend-request",
+  "/:userId/unsend-request",
   passport.authenticate("jwt", { session: false }),
 
   usersController.unsend_friend_request_DELETE
@@ -71,7 +71,7 @@ router.delete(
 
 // delete friend (unfriend)
 router.delete(
-  "/:id/delete-friend",
+  "/:userId/delete-friend",
   passport.authenticate("jwt", { session: false }),
   usersController.delete_friend_DELETE
 );
