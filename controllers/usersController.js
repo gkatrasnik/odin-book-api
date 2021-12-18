@@ -164,7 +164,7 @@ exports.send_friend_request_POST = async (req, res) => {
   const secondUserId = req.params.userId;
 
   try {
-    const currentUser = await User.findById(userdId);
+    const currentUser = await User.findById(userId);
     const secondUser = await User.findById(secondUserId);
 
     if (currentUser._id.toString() === secondUser._id.toString()) {
@@ -177,9 +177,9 @@ exports.send_friend_request_POST = async (req, res) => {
     ) {
       return res.status(400).json({
         success: false,
-        msg: "You alreqdy sent friend request to this user",
+        msg: "You already sent friend request to this user",
       });
-    } else if (secondUser.friends.includes(loggedUser._id.toString())) {
+    } else if (secondUser.friends.includes(currentUser._id.toString())) {
       return res.status(400).json({
         success: false,
         msg: "User is already your friend!",
@@ -204,18 +204,17 @@ exports.send_friend_request_POST = async (req, res) => {
 };
 
 // accept friend request
-
 exports.accept_friend_request_POST = async (req, res) => {
   const { userId } = req.body;
   const secondUserId = req.params.userId;
 
   try {
-    const currentUser = await User.findById(userdId);
+    const currentUser = await User.findById(userId);
     const secondUser = await User.findById(secondUserId);
 
     if (
       !currentUser.recieved_friend_requests.includes(secondUser._id) ||
-      !secondUser.sent_friend_requests.includes(loggedUser._id)
+      !secondUser.sent_friend_requests.includes(currentUser._id)
     ) {
       return res.status(400).json({
         success: false,
@@ -258,7 +257,6 @@ exports.accept_friend_request_POST = async (req, res) => {
 };
 
 //deny friend request
-
 exports.deny_friend_request_DELETE = async (req, res) => {
   const { userId } = req.body;
   const secondUserId = req.params.userId;
@@ -292,6 +290,51 @@ exports.deny_friend_request_DELETE = async (req, res) => {
       return res.status(200).json({
         success: true,
         msg: "Friend request denied",
+        currentUser: updatedCurrentUser,
+        secondUser: updatedSecondUser,
+      });
+    }
+  } catch (err) {
+    return res.status(400).json({ success: false, msg: err.message });
+  }
+};
+
+// usend friend request
+exports.unsend_friend_request_DELETE = async (req, res) => {
+  const { userId } = req.body;
+  const secondUserId = req.params.userId;
+
+  try {
+    const currentUser = await User.findById(userdId);
+    const secondUser = await User.findById(secondUserId);
+
+    if (
+      !secondUser.recieved_friend_requests.includes(currentUser._id.toString())
+    ) {
+      return res
+        .status(404)
+        .json({ success: false, msg: "Cannot find a friend request" });
+    } else {
+      //if everything is ok
+
+      // delete ids from sent friend request and recieved friend requests
+      const updatedSentFriendRequests = currentUser.sent_friend_requests.filter(
+        (request) => request != secondUser._id.toString()
+      );
+      const updatedRecievedFriendRequests =
+        secondUser.recieved_friend_requests.filter(
+          (request) => request != currentUser._id.toString()
+        );
+
+      currentUser.sent_friend_requests = updatedSentFriendRequests;
+      secondUser.recieved_friend_requests = updatedRecievedFriendRequests;
+
+      const updatedCurrentUser = await currentUser.save();
+      const updatedSecondUser = await secondUser.save();
+
+      return res.status(200).json({
+        success: true,
+        msg: "Friend request unsent",
         currentUser: updatedCurrentUser,
         secondUser: updatedSecondUser,
       });
