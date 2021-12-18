@@ -37,4 +37,43 @@ router.get(
   usersController.profile_GET
 );
 
+//-------------------FRIEND REQUESTS---------------------------------
+
+// Send friend request
+router.post(
+  "/:id/send-request",
+  passport.authenticate("jwt", { session: false }),
+  usersController.send_friend_request_POST
+);
+
+// accept friend request
+router.post(
+  "/:id/accept-request",
+  passport.authenticate("jwt", { session: false }),
+  usersController.accept_friend_request_POST
+);
+
+// deny friend request
+router.delete(
+  "/:id/deny-request",
+  passport.authenticate("jwt", { session: false }),
+
+  usersController.deny_friend_request_DELETE
+);
+
+// cancel sent friend request (unsend)
+router.delete(
+  "/:id/unsend-request",
+  passport.authenticate("jwt", { session: false }),
+
+  usersController.unsend_friend_request_DELETE
+);
+
+// delete friend (unfriend)
+router.delete(
+  "/:id/delete-friend",
+  passport.authenticate("jwt", { session: false }),
+  usersController.delete_friend_DELETE
+);
+
 module.exports = router;
