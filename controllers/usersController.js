@@ -159,7 +159,7 @@ exports.notfriends_GET = (req, res, next) => {
 //----------------------FRIEND REQUESTS---------------------------------
 
 //send friend request
-exports.send_friend_request_POST = (req, res, next) => {
+exports.send_friend_request_POST = async (req, res) => {
   const { userId } = req.body;
   const secondUserId = req.params.userId;
 
@@ -202,3 +202,5 @@ exports.send_friend_request_POST = (req, res, next) => {
     return res.status(400).json({ success: false, msg: err.message });
   }
 };
+
+// accept friend request
