@@ -86,8 +86,8 @@ exports.login_POST = async (req, res, next) => {
 
 //get user profile
 exports.profile_GET = (req, res, next) => {
-  User.findById(req.params.userId)
-    .populate("friends")
+  User.findById(req.params.userId, "-password")
+    .populate("friends", "-password")
     .exec(function (err, user) {
       if (err) {
         return res.status(500).json({ success: false, msg: err.message });
@@ -98,9 +98,9 @@ exports.profile_GET = (req, res, next) => {
       }
       //if user found, search for posts where user === user
       Post.find({ user: req.params.userId })
-        .populate("user")
-        .populate("likes")
-        .populate("comments")
+        .populate("user", "-password")
+        .populate("likes", "-password")
+        .populate("comments", "-password")
         .exec(function (err, posts) {
           if (err) {
             return res.status(500).json({ success: false, msg: err.message });
