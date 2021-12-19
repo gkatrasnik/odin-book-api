@@ -9,9 +9,9 @@ router.use("/:postId/comments", commentsRouter);
 
 //add new post
 router.post(
-  "/:userId/newpost",
+  "/:userId/new",
   passport.authenticate("jwt", { session: false }),
-  postsController.newpost_POST
+  postsController.new_post_POST
 );
 
 // get one post
@@ -26,6 +26,13 @@ router.delete(
   "/:postId",
   passport.authenticate("jwt", { session: false }),
   postsController.post_DELETE
+);
+
+// like post
+router.post(
+  "/:postId/like",
+  passport.authenticate("jwt", { session: false }),
+  postsController.like_post_POST
 );
 
 //get list of all posts(edit to only get posts of my friends)---------------------

@@ -1,9 +1,10 @@
 const Post = require("../models/post");
 const Comment = require("../models/comment");
 const User = require("../models/user");
+const Notification = require("../models/notification");
 
 //post new post
-exports.newpost_POST = (req, res, next) => {
+exports.new_post_POST = (req, res, next) => {
   const { text } = req.body;
   const userId = req.params.userId;
   const newPost = new Post({
@@ -65,7 +66,58 @@ exports.post_DELETE = (req, res) => {
     });
 };
 
-//get list of all posts //edit to only get friends posts!!! -----------------------
+// like post
+exports.like_post_POST = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const postId = req.params.postId;
+
+    const post = await Post.findById(postId);
+
+    const likesArray = post.likes;
+    const postAuthor = await User.findById(post.user._id);
+    const currentUser = await User.findById(userId);
+
+    //if user already liked the post, unlike post
+    if (likesArray.includes(userId)) {
+      const updatedLikesArray = likesArray.filter(
+        (like) => like != userId.toString()
+      );
+
+      post.likes = updatedLikesArray;
+      await post.save();
+    } else {
+      const newNotification = new Notification({
+        text: `You have new like from ${currentUser.firstname} ${currentUser.lastname}`,
+        from_user: userId, //currentUser id
+        type: "like",
+      });
+
+      const updatedNotificatoins = [
+        ...postAuthor.notifications,
+        newNotification._id,
+      ];
+      postAuthor.notifications = updatedNotificatoins;
+      const updatedLikes = [...likesArray, userId];
+      post.likes = updatedLikes;
+
+      await postAuthor.save();
+      await newNotification.save();
+      await post.save();
+    }
+    res.status(200).json({
+      success: true,
+      post: post,
+    });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      msg: err.message,
+    });
+  }
+};
+
+//get list of friends posts(including my posts)
 exports.posts_list_GET = async (req, res) => {
   try {
     const { userId } = req.body;
