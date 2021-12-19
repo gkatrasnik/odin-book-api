@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 const postsController = require("../controllers/postsController");
 const passport = require("passport");
-var commentsRouter = require("./comments");
+const commentsRouter = require("./comments");
 
 //nested comments router?
 router.use("/:postId/comments", commentsRouter);
