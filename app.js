@@ -5,7 +5,8 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var passport = require("passport");
 var cors = require("cors");
-
+var compression = require("compression");
+var helmet = require("helmet");
 require("./helpers/passport");
 
 var usersRouter = require("./routes/users");
@@ -24,6 +25,9 @@ db.on("error", console.error.bind(console, "mongo connection error"));
 var app = express();
 app.use(cors());
 app.use(passport.initialize());
+
+app.use(compression()); //Compress all routes
+app.use(helmet());
 
 app.use(logger("dev"));
 app.use(express.json());
