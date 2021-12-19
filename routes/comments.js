@@ -1,5 +1,5 @@
 var express = require("express");
-var router = express.Router();
+var router = express.Router({ mergeParams: true });
 const commentsController = require("../controllers/commentsController");
 const passport = require("passport");
 

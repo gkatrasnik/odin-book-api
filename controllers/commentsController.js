@@ -24,7 +24,7 @@ exports.new_comment_POST = async (req, res) => {
     }
 
     const postAuthor = await User.findById(post.user._id);
-    const commentAuthor = await User.findById(userId);
+    const currentUser = await User.findById(userId);
     const newComment = new Comment({
       text: text,
       user: userId,
@@ -42,7 +42,7 @@ exports.new_comment_POST = async (req, res) => {
     ];
     postAuthor.notifications = updatedNotificatoins;
 
-    const updatedCommments = [...post.comments, newComment._id];
+    const updatedComments = [...post.comments, newComment._id];
     post.comments = updatedComments;
 
     const updatedPost = await post.save();
@@ -78,11 +78,11 @@ exports.comment_DELETE = async (req, res) => {
     }
 
     await comment.remove();
-    const updatedComment = post.comments.filter(
+    const updatedComments = post.comments.filter(
       (comment) => comment != commentId.toString()
     );
 
-    post.comments = updatedComment;
+    post.comments = updatedComments;
     const updatedPost = await post.save();
 
     return res
