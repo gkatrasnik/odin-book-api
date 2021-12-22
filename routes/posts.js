@@ -35,8 +35,8 @@ router.post(
   postsController.like_post_POST
 );
 
-//get list of all posts(edit to only get posts of my friends)---------------------
-router.get(
+//get list of friends posts) post request is required because you cant send req.body with get
+router.post(
   "/",
   passport.authenticate("jwt", { session: false }),
   postsController.posts_list_GET

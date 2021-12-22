@@ -77,6 +77,3 @@ router.delete(
 );
 
 module.exports = router;
-
-// TEST FRIEND REQUSETS WITH POSTMAN
-// ALSO TEST CREATING USERS AND POSTS (NEW USER MODEL)
