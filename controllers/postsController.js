@@ -158,7 +158,7 @@ exports.user_posts_list_GET = async (req, res) => {
 
     const currentUser = await User.findById(userId);
 
-    const posts = await Post.find({ user: currentUser })
+    const posts = await Post.find({ user: currentUser._id })
       .populate("user", "-password")
       .populate({
         path: "comments",
