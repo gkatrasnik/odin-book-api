@@ -145,7 +145,10 @@ exports.friends_GET = (req, res, next) => {
 
 //get list of NOT friends
 exports.notfriends_GET = (req, res, next) => {
-  User.find({ friends: { $ne: req.params.userId } })
+  User.find({
+    friends: { $ne: req.params.userId },
+    _id: { $ne: req.params.userId },
+  })
     .sort([["username", "ascending"]])
     .exec(function (err, notlist_friends) {
       if (err) {
