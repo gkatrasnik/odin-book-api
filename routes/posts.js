@@ -14,6 +14,13 @@ router.post(
   postsController.new_post_POST
 );
 
+//get spcific users posts
+router.get(
+  "/:userId/posts",
+  passport.authenticate("jwt", { session: false }),
+  postsController.user_posts_list_GET
+);
+
 // get one post
 router.get(
   "/:postId",

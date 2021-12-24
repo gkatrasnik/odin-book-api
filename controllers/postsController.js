@@ -150,3 +150,34 @@ exports.posts_list_GET = async (req, res) => {
     });
   }
 };
+
+//get list of specific user
+exports.user_posts_list_GET = async (req, res) => {
+  try {
+    const { userId } = req.params.userId;
+
+    const currentUser = await User.findById(userId);
+
+    const posts = await Post.find({ user: currentUser })
+      .populate("user", "-password")
+      .populate({
+        path: "comments",
+        populate: { path: "user" },
+        options: { sort: { createdAt: -1 } },
+      })
+      .populate("likes", "-password")
+      .sort("-createdAt");
+
+    res.status(200).json({
+      success: true,
+      msg: "All posts from user",
+      posts: posts,
+    });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      msg: "Posts coudn't be find!",
+      err: err.message,
+    });
+  }
+};
