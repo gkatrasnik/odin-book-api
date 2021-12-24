@@ -154,11 +154,11 @@ exports.posts_list_GET = async (req, res) => {
 //get list of specific user
 exports.user_posts_list_GET = async (req, res) => {
   try {
-    const { userId } = req.params.userId;
+    const userId = req.params.userId;
 
-    const currentUser = await User.findById(userId);
-
-    const posts = await Post.find({ user: currentUser._id })
+    const user = await User.findById(userId);
+    console.log(userId);
+    const posts = await Post.find({ user: user })
       .populate("user", "-password")
       .populate({
         path: "comments",
