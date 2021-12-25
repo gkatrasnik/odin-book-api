@@ -135,7 +135,7 @@ exports.posts_list_GET = async (req, res) => {
         options: { sort: { createdAt: -1 } },
       })
       .populate("likes", "-password")
-      .sort("-createdAt");
+      .sort("-timestamp");
 
     res.status(200).json({
       success: true,
