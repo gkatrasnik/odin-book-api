@@ -29,8 +29,8 @@ router.get(
 );
 
 // delete post
-router.delete(
-  "/:postId",
+router.post(
+  "/:postId/delete",
   passport.authenticate("jwt", { session: false }),
   postsController.post_DELETE
 );

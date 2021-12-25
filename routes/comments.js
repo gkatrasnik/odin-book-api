@@ -13,8 +13,8 @@ router.post(
 );
 
 //delete comment
-router.delete(
-  "/:commentId",
+router.post(
+  "/:commentId/delete",
   passport.authenticate("jwt", { session: false }),
   commentsController.comment_DELETE
 );

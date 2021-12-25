@@ -54,7 +54,7 @@ router.post(
 );
 
 // deny friend request
-router.delete(
+router.post(
   "/:userId/deny-request",
   passport.authenticate("jwt", { session: false }),
 
@@ -62,7 +62,7 @@ router.delete(
 );
 
 // cancel sent friend request (unsend)
-router.delete(
+router.post(
   "/:userId/unsend-request",
   passport.authenticate("jwt", { session: false }),
 
@@ -70,7 +70,7 @@ router.delete(
 );
 
 // delete friend (unfriend)
-router.delete(
+router.post(
   "/:userId/delete-friend",
   passport.authenticate("jwt", { session: false }),
   usersController.delete_friend_DELETE

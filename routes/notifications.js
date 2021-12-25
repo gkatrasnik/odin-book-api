@@ -6,8 +6,8 @@ const passport = require("passport");
 router.get("/", notificationsController.index);
 
 //delete notification
-router.delete(
-  "/:notificationId",
+router.post(
+  "/:notificationId/delete",
   passport.authenticate("jwt", { session: false }),
   notificationsController.notification_DELETE
 );
