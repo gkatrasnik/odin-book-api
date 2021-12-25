@@ -37,6 +37,13 @@ router.get(
   usersController.profile_GET
 );
 
+//get user notifications and requests
+router.get(
+  "/:userId/notifications",
+  passport.authenticate("jwt", { session: false }),
+  usersController.notifications_GET
+);
+
 //-------------------FRIEND REQUESTS---------------------------------
 
 // Send friend request

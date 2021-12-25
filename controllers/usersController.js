@@ -117,6 +117,25 @@ exports.profile_GET = (req, res, next) => {
     });
 };
 
+//get user notifications and requests
+exports.notifications_GET = (req, res, next) => {
+  User.findById(req.params.userId, "-password")
+    .populate("notifications")
+    .populate("recieved_friend_requests")
+    .populate("sent_friend_requests")
+    .exec(function (err, user) {
+      if (err) {
+        return res.status(500).json({ success: false, msg: err.message });
+      }
+      if (user == null) {
+        const err = new Error("User not found");
+        return res.status(404).json({ success: false, msg: err.message });
+      }
+
+      return res.status(200).json({ success: true, user: user });
+    });
+};
+
 //get list of users
 exports.list_GET = (req, res, next) => {
   User.find()

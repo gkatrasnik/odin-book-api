@@ -10,10 +10,9 @@ exports.index = function (req, res, next) {
 //add comment
 exports.new_comment_POST = async (req, res) => {
   const { userId } = req.body;
-  const postId = req.params.postId; //UNDEFINED
+  const postId = req.params.postId;
   const text = req.body.text;
 
-  console.log(postId);
   try {
     const post = await Post.findById(postId);
     if (!post) {
@@ -36,11 +35,11 @@ exports.new_comment_POST = async (req, res) => {
       type: "comment",
     });
 
-    const updatedNotificatoins = [
+    const updatedNotifications = [
       ...postAuthor.notifications,
       newNotification._id,
     ];
-    postAuthor.notifications = updatedNotificatoins;
+    postAuthor.notifications = updatedNotifications;
 
     const updatedComments = [...post.comments, newComment._id];
     post.comments = updatedComments;
